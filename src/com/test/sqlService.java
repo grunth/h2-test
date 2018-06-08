@@ -82,7 +82,14 @@ public class sqlService {
 	// или позапрошлом месяцах
 	public void getUsersDOBTwoMonth(Statement st) {
 		try {
-			result = st.executeQuery("SELECT * FROM USERS WHERE MONTH(DOB) IN (MONTH(NOW())-1, MONTH(NOW())-2)");
+			result = st.executeQuery("SELECT * FROM USERS WHERE MONTH(DOB) IN " + 
+					"(CASE  " + 
+					"WHEN MONTH(NOW())-1 = 0 THEN 12 " + 
+					"ELSE MONTH(NOW())-1 END, " + 
+					"CASE  " + 
+					"WHEN MONTH(NOW())-2 = 0 THEN 12 " + 
+					"WHEN MONTH(NOW())-2 = -1 THEN 11 " + 
+					"ELSE MONTH(NOW())-2 END);");
 			columns = result.getMetaData().getColumnCount();
 			System.out.println(
 					"4. Выборка информации о пользователях, у которых был день рождения в прошлом или позапрошлом месяцах.");
@@ -102,13 +109,13 @@ public class sqlService {
 	// 5. Изменение статуса произвольного пользователя, перевод в другую группу.
 
 	public void changeUserStatus(Statement st) {
-			Scanner in1 = new Scanner(System.in);
-			Scanner in2 = new Scanner(System.in);
-			System.out.println("5. Изменение статуса произвольного пользователя: Введите ID пользователя: ");
-			UserID = in1.nextInt();
-			System.out.println("5. Изменение статуса произвольного пользователя: Введите статус: ");
-			String status = in2.nextLine();
-			try {
+		Scanner in1 = new Scanner(System.in);
+		Scanner in2 = new Scanner(System.in);
+		System.out.println("5. Изменение статуса произвольного пользователя: Введите ID пользователя: ");
+		UserID = in1.nextInt();
+		System.out.println("5. Изменение статуса произвольного пользователя: Введите статус: ");
+		String status = in2.nextLine();
+		try {
 			st.execute("UPDATE USERS SET STATUS = " + status + " where ID = " + UserID + ";");
 			System.out.println("Статус изменен");
 			System.out.println("------------------------------------------");
@@ -137,18 +144,16 @@ public class sqlService {
 
 	// 6. Удаление произвольного пользователя.
 	public void deleteUser(Statement st) {
+		Scanner in = new Scanner(System.in);
+		System.out.println("6. Удаление произвольного пользователя. Введите ID пользователя: ");
+		UserID = in.nextInt();
 
-			Scanner in = new Scanner(System.in);
-			System.out.println("6. Удаление произвольного пользователя. Введите ID пользователя: ");
-			UserID = in.nextInt();
-			
-			try {
-				result = st.executeQuery("SELECT * FROM USERS WHERE ID = " + UserID + ";");
-				if (!result.next()) 
-					{
-					System.out.println("Нет такого пользователя. Пользователь не удален!");
-					return;
-					}
+		try {
+			result = st.executeQuery("SELECT * FROM USERS WHERE ID = " + UserID + ";");
+			if (!result.next()) {
+				System.out.println("Нет такого пользователя. Пользователь не удален!");
+				return;
+			}
 			st.execute("DELETE FROM USERS where ID = " + UserID + ";");
 			System.out.println("Пользователь удален");
 			System.out.println("------------------------------------------");
