@@ -137,10 +137,18 @@ public class sqlService {
 
 	// 6. Удаление произвольного пользователя.
 	public void deleteUser(Statement st) {
-		try {
+
 			Scanner in = new Scanner(System.in);
 			System.out.println("6. Удаление произвольного пользователя. Введите ID пользователя: ");
 			UserID = in.nextInt();
+			
+			try {
+				result = st.executeQuery("SELECT * FROM USERS WHERE ID = " + UserID + ";");
+				if (!result.next()) 
+					{
+					System.out.println("Нет такого пользователя. Пользователь не удален!");
+					return;
+					}
 			st.execute("DELETE FROM USERS where ID = " + UserID + ";");
 			System.out.println("Пользователь удален");
 			System.out.println("------------------------------------------");
