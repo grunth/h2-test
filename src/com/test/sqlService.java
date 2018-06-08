@@ -17,7 +17,7 @@ public class sqlService {
 	public void getUsersGroups(Statement st) {
 		try {
 			Scanner in = new Scanner(System.in);
-			System.out.println("2. Выборка информации о пользователях по: Введите группу: ");
+			System.out.println("2. Выборка информации о пользователях по: Введите ID группы: ");
 			grp = in.nextInt();
 			result = st.executeQuery("SELECT U. ID UID, U.NAME UNAME, G.NAME GNAME FROM USERS U INNER JOIN "
 					+ "GROUPS G ON U.GROUPID=G.GROUPID WHERE U.GROUPID = " + grp + ";");
@@ -102,12 +102,13 @@ public class sqlService {
 	// 5. Изменение статуса произвольного пользователя, перевод в другую группу.
 
 	public void changeUserStatus(Statement st) {
-		try {
-			Scanner in = new Scanner(System.in);
+			Scanner in1 = new Scanner(System.in);
+			Scanner in2 = new Scanner(System.in);
 			System.out.println("5. Изменение статуса произвольного пользователя: Введите ID пользователя: ");
-			UserID = in.nextInt();
+			UserID = in1.nextInt();
 			System.out.println("5. Изменение статуса произвольного пользователя: Введите статус: ");
-			String status = in.nextLine();
+			String status = in2.nextLine();
+			try {
 			st.execute("UPDATE USERS SET STATUS = " + status + " where ID = " + UserID + ";");
 			System.out.println("Статус изменен");
 			System.out.println("------------------------------------------");
@@ -120,11 +121,12 @@ public class sqlService {
 
 	public void changeUserGroup(Statement st) {
 		try {
-			Scanner in = new Scanner(System.in);
-			System.out.println("5. Изменение статуса произвольного пользователя: Введите ID пользователя: ");
-			UserID = in.nextInt();
-			System.out.println("5. Изменение статуса произвольного пользователя: Введите ID группы пользователя: ");
-			grp = in.nextInt();
+			Scanner in1 = new Scanner(System.in);
+			Scanner in2 = new Scanner(System.in);
+			System.out.println("5. Изменение группы произвольного пользователя: Введите ID пользователя: ");
+			UserID = in1.nextInt();
+			System.out.println("5. Изменение группы произвольного пользователя: Введите ID группы пользователя: ");
+			grp = in2.nextInt();
 			st.execute("UPDATE USERS SET GROUPID = " + grp + " where ID = " + UserID + ";");
 			System.out.println("Группа изменена");
 			System.out.println("------------------------------------------");
